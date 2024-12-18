@@ -7,14 +7,14 @@ function Search() {
   // const [searchTerm, setSearchTerm] = useState("");
   const { setSelectedLocation } = useContext(LocationContext);
 
-  const doSearch = useDebounce((term) => {
-    const fetchedLocation = getLocationByName(term);
+  const doSearch = useDebounce(async (term) => {
+    if (!term || term.length < 3) return;
+    const fetchedLocation = await getLocationByName(term);
     setSelectedLocation({ ...fetchedLocation });
-  }, 1000);
+  }, 500);
 
   function handleChange(e) {
     const value = e.target.value;
-    // setSearchTerm(value);
     doSearch(value);
   }
   // function handleSubmit(e) {

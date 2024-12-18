@@ -75,69 +75,37 @@ function getLocations() {
   return data;
 }
 
-function getLocationByName(location) {
-  if (!location) return null;
+async function getLocationByName(location) {
+  if (!location || location.length <= 3) return null;
 
-  const filtered = data.filter(
-    (item) => item.location.toLowerCase() === location.toLowerCase()
-  );
+  const defaultLocation = {
+    location: "Unknown",
+    latitude: 0,
+    longitude: 0,
+  };
 
-  if (filtered.length > 0) {
-    return filtered[0];
-  } else {
-    const defaultLocation = {
-      location: "",
-      latitude: 0,
-      longitude: 0,
+  try {
+    const geoRes = await fetch(
+      `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
+        location
+      )}`
+    );
+    const geoData = await geoRes.json();
+
+    if (!Array.isArray(geoData.results) || geoData.results.length === 0) {
+      return defaultLocation;
+    }
+    const { latitude, longitude, name } = geoData.results[0];
+
+    return {
+      location: name,
+      latitude,
+      longitude,
     };
+  } catch (err) {
+    console.error("Error fetching location:", err);
     return defaultLocation;
   }
 }
-
-// async function getLocationByName(location) {
-//   try {
-//     const geoRes = await fetch(
-//       `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
-//         location
-//       )}`
-//     );
-
-//     // Handle fetch errors
-//     if (!geoRes.ok) {
-//       console.error(`Error fetching geolocation data: ${geoRes.statusText}`);
-//       return {
-//         location: "",
-//         latitude: 0,
-//         longitude: 0,
-//       };
-//     }
-
-//     const geoData = await geoRes.json();
-
-//     // Handle case where no results are returned
-//     if (!geoData.results || geoData.results.length === 0) {
-//       return {
-//         location: "",
-//         latitude: 0,
-//         longitude: 0,
-//       };
-//     }
-
-//     // Extract the first result
-//     const { latitude, longitude, name } = geoData.results[0];
-//     return {
-//       location: name,
-//       latitude,
-//       longitude,
-//     };
-//   } catch (error) {
-//     console.error(`An error occurred: ${error.message}`);
-//     return {
-//       location: "",
-//       latitude: 0,
-//       longitude: 0,
-//     };
-//   }
-// }
 
 export { getLocationByName, getLocations };
