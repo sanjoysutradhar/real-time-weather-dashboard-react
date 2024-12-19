@@ -76,7 +76,7 @@ function getLocations() {
 }
 
 async function getLocationByName(location) {
-  if (!location || location.length <= 3) return null;
+  if (!location || location.length < 3) return null;
 
   const defaultLocation = {
     location: "Unknown",
