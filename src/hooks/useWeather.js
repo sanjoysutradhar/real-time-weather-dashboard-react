@@ -1,7 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import { LocationContext } from "../context";
-
-const VITE_WEATHER_API_KEY = `74ef1c57fc0b67fd7dd1d9452c8e33f7`;
 const useWeather = () => {
   const [weatherData, setWeatherData] = useState({
     location: "",
@@ -37,8 +35,8 @@ const useWeather = () => {
 
       const response = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${
-          //import.meta.env.VITE_WEATHER_API_KEY
-          VITE_WEATHER_API_KEY
+          import.meta.env.VITE_WEATHER_API_KEY
+          // VITE_WEATHER_API_KEY
         }&units=metric`
       );
       if (!response.ok) {
